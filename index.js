@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -47,11 +47,39 @@ async function run() {
             res.send(result);
         })
 
+        app.get('/craft/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {_id:new ObjectId(id)};
+            const result = await craftCollection.findOne(query);
+            res.send(result);
+        })
+
 
         app.post('/craft', async(req, res) => {
             const newCraft = req.body;
             console.log(newCraft);
             const result = await craftCollection.insertOne(newCraft);
+            res.send(result);
+        })
+
+        app.put('/craft/:id', async(req, res) => {
+            const id = req.params.id;
+            const filter = {_id:new ObjectId(id)};
+            const options = { upsert: true};
+            const updatedCraft = req.body;
+            const craft = {
+                $set: {
+                    name: updatedCraft.name, scName: updatedCraft.scName, description: updatedCraft.description, price: updatedCraft.price, rating: updatedCraft.rating, customization: updatedCraft.customization, time: updatedCraft.time, status: updatedCraft.status, email: updatedCraft.email, uName: updatedCraft.uName, image: updatedCraft.image
+                }
+            }
+            const result = await craftCollection.updateOne(filter, craft, options);
+            res.send(result);
+        })
+
+        app.delete('/craft/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {_id:new ObjectId(id)};
+            const result = await craftCollection.deleteOne(query);
             res.send(result);
         })
 
