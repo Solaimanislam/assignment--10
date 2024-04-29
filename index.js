@@ -33,6 +33,13 @@ async function run() {
         // await client.connect();
 
         const craftCollection = client.db('craftDB').collection('craft');
+        const ArtCraftCollection = client.db('craftDB').collection('ArtcraftS');
+
+        app.get('/ArtcraftS', async(req, res) => {
+            const cursor = ArtCraftCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        })
 
 
         app.get('/craft', async(req, res) => {
