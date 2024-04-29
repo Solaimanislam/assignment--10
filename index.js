@@ -81,6 +81,7 @@ async function run() {
             }
             const result = await craftCollection.updateOne(filter, craft, options);
             res.send(result);
+            // console.log(result);
         })
 
         app.delete('/craft/:id', async(req, res) => {
