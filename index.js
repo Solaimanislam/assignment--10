@@ -43,12 +43,15 @@ async function run() {
 
         app.get('/craft', async(req, res) => {
             const cursor = craftCollection.find();
+
             const result = await cursor.toArray();
+
             res.send(result);
         })
 
         app.get('/myCraft/:email', async( req, res) => {
             console.log(req.params.email);
+            
             const result = await craftCollection.find({email: req.params.email}).toArray();
             res.send(result);
         })
