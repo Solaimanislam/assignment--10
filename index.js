@@ -29,19 +29,19 @@ const client = new MongoClient(uri, {
 
 async function run() {
     try {
-        
+
 
         const craftCollection = client.db('craftDB').collection('craft');
         const ArtCraftCollection = client.db('craftDB').collection('ArtcraftS');
 
-        app.get('/ArtcraftS', async(req, res) => {
+        app.get('/ArtcraftS', async (req, res) => {
             const cursor = ArtCraftCollection.find();
             const result = await cursor.toArray();
             res.send(result);
         })
 
 
-        app.get('/craft', async(req, res) => {
+        app.get('/craft', async (req, res) => {
             const cursor = craftCollection.find();
 
             const result = await cursor.toArray();
@@ -49,55 +49,65 @@ async function run() {
             res.send(result);
         })
 
-        app.get('/myCraft/:email', async( req, res) => {
+        app.get('/myCraft/:email', async (req, res) => {
             console.log(req.params.email);
-            
-            const result = await craftCollection.find({email: req.params.email}).toArray();
+
+            const result = await craftCollection.find({ email: req.params.email }).toArray();
             res.send(result);
         })
 
-        app.get('/craft/:id', async(req, res) => {
+        app.get('/craft/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id:new ObjectId(id)};
+            const query = { _id: new ObjectId(id) };
             const result = await craftCollection.findOne(query);
             res.send(result);
         })
 
 
-        app.post('/craft', async(req, res) => {
+        app.post('/craft', async (req, res) => {
             const newCraft = req.body;
             console.log(newCraft);
             const result = await craftCollection.insertOne(newCraft);
             res.send(result);
         })
 
-        app.put('/craft/:id', async(req, res) => {
+        app.put('/craft/:id', async (req, res) => {
             const id = req.params.id;
-            const filter = {_id:new ObjectId(id)};
-            const options = { upsert: true};
+            const filter = { _id: new ObjectId(id) };
+            const options = { upsert: true };
             const updatedCraft = req.body;
             const craft = {
                 $set: {
-                    name: updatedCraft.name, scName: updatedCraft.scName, description: updatedCraft.description, price: updatedCraft.price, rating: updatedCraft.rating, customization: updatedCraft.customization, time: updatedCraft.time, status: updatedCraft.status, email: updatedCraft.email, uName: updatedCraft.uName, image: updatedCraft.image
+                    name: updatedCraft.name,
+                    scName: updatedCraft.scName,
+                    description: updatedCraft.description,
+                    price: updatedCraft.price,
+                    rating: updatedCraft.rating,
+                    customization: updatedCraft.customization,
+                    time: updatedCraft.time,
+                    status: updatedCraft.status,
+                    email: updatedCraft.email,
+                    uName: updatedCraft.uName,
+                    image: updatedCraft.image
                 }
             }
             const result = await craftCollection.updateOne(filter, craft, options);
             res.send(result);
         })
 
-        app.delete('/craft/:id', async(req, res) => {
+        app.delete('/craft/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id:new ObjectId(id)};
+            const query = { _id: new ObjectId(id) };
             const result = await craftCollection.deleteOne(query);
             res.send(result);
         })
 
 
-        
+
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
-       
+
     }
 }
 run().catch(console.dir);
